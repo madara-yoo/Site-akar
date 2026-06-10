@@ -45,8 +45,28 @@ BANNER = r'''
 
 
 class MadaraShell(cmd.Cmd):
-    intro = BANNER
-    prompt = f"{GREEN}madara{RESET}@{BLUE}kali{RESET}:~$ "
+    # support both English and Arabic prompts/commands
+    ARABIC_BANNER = r'''
+    مرحبًا بكم في محطة مدارا (محاكاة)
+    اكتب 'مساعدة' أو 'help' للحصول على الأوامر. استخدم 'خروج' أو Ctrl-D للخروج.
+    '''
+
+    intro = BANNER + "\n" + ARABIC_BANNER
+    # Arabic prompt by default
+    prompt = f"{GREEN}مدارا{RESET}@{BLUE}كالي{RESET}:~$ "
+
+    # map Arabic command words to English builtin names
+    AR_COMMANDS = {
+        'قائمة': 'ls', 'عرض': 'ls', 'ls': 'ls', 'dir': 'ls',
+        'اذهب': 'cd', 'انتقل': 'cd', 'cd': 'cd',
+        'المسار': 'pwd', 'pwd': 'pwd',
+        'اقرأ': 'cat', 'قراءة': 'cat', 'cat': 'cat',
+        'مسح': 'clear', 'واضح': 'clear', 'clear': 'clear',
+        'مساعدة': 'help', 'معلومات': 'help', 'help': 'help',
+        'خروج': 'exit', 'انهاء': 'exit', 'exit': 'exit',
+        'تاريخ': 'history', 'history': 'history',
+        'من_انا': 'whoami', 'whoami': 'whoami', 'uname': 'uname', 'من': 'whoami'
+    }
 
     def __init__(self):
         super().__init__()
@@ -74,10 +94,27 @@ class MadaraShell(cmd.Cmd):
     def postloop(self):
         self._save_history()
 
+    # Translate Arabic command tokens to English builtins before execution
+    def precmd(self, line):
+        if not line:
+            return line
+        parts = shlex.split(line)
+        if not parts:
+            return line
+        key = parts[0].strip()
+        # normalize Arabic punctuation/variants
+        key_norm = key.replace('ـ', '').replace('\u200f', '')
+        mapped = self.AR_COMMANDS.get(key_norm)
+        if mapped and mapped != key:
+            parts[0] = mapped
+            new_line = ' '.join(shlex.quote(p) for p in parts)
+            return new_line
+        return line
+
     # ------- builtins
     def do_exit(self, arg):
         """Exit the terminal"""
-        print('bye')
+        print('مع السلامة — bye')
         return True
 
     def do_EOF(self, arg):
@@ -98,6 +135,7 @@ class MadaraShell(cmd.Cmd):
         try:
             os.chdir(os.path.expanduser(target))
         except Exception as e:
+            # show message in Arabic
             print(f"cd: {e}")
 
     def do_ls(self, arg):
@@ -147,13 +185,16 @@ class MadaraShell(cmd.Cmd):
             print(f"{i}  {line}")
 
     def do_help(self, arg):
-        """List available commands"""
+        """List available commands (English and Arabic)"""
         cmds = [
-            'ls', 'cd', 'pwd', 'cat', 'echo', 'clear', 'history', 'whoami', 'uname',
-            'help', 'exit'
+            ('ls', 'قائمة/عرض'), ('cd', 'اذهب/انتقل'), ('pwd', 'المسار'), ('cat', 'اقرأ/قراءة'),
+            ('echo', 'echo'), ('clear', 'مسح'), ('history', 'تاريخ'), ('whoami', 'من_انا'),
+            ('uname', 'uname'), ('help', 'مساعدة'), ('exit', 'خروج')
         ]
-        print('Builtins: ' + ', '.join(cmds))
-        print("Unknown commands are executed via system shell. Dangerous commands are blocked by default.")
+        print('Available builtins / الأوامر المتاحة:')
+        for en, ar in cmds:
+            print(f"  {en:6}  —  {ar}")
+        print("Unknown commands are executed via system shell.\nالأوامر غير المعروفة تُنفّذ عبر شل النظام. الأوامر الخطرة محجوبة افتراضيًا.")
 
     # ------- execution of external commands
     def default(self, line):
