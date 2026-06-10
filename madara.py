@@ -52,8 +52,6 @@ class MadaraShell(cmd.Cmd):
     '''
 
     intro = BANNER + "\n" + ARABIC_BANNER
-    # Arabic prompt by default
-    prompt = f"{GREEN}مدارا{RESET}@{BLUE}كالي{RESET}:~$ "
 
     # map Arabic command words to English builtin names
     AR_COMMANDS = {
@@ -71,7 +69,19 @@ class MadaraShell(cmd.Cmd):
     def __init__(self):
         super().__init__()
         self.cwd = os.getcwd()
+        self.lang = 'ar'
+        # auto-switch to English in Termux where Arabic shaping is poor
+        prefix = os.environ.get('PREFIX','') or os.environ.get('HOME','')
+        if 'com.termux' in prefix or 'com.termux' in os.environ.get('ANDROID_DATA',''):
+            self.lang = 'en'
+        self._update_prompt()
         self._load_history()
+
+    def _update_prompt(self):
+        if getattr(self, 'lang', 'ar') == 'en':
+            self.prompt = f"{GREEN}madara{RESET}@{BLUE}kali{RESET}:~$ "
+        else:
+            self.prompt = f"{GREEN}مدارا{RESET}@{BLUE}كالي{RESET}:~$ "
 
     # ------- history persistence
     def _load_history(self):
@@ -104,17 +114,35 @@ class MadaraShell(cmd.Cmd):
         key = parts[0].strip()
         # normalize Arabic punctuation/variants
         key_norm = key.replace('ـ', '').replace('\u200f', '')
-        mapped = self.AR_COMMANDS.get(key_norm)
-        if mapped and mapped != key:
-            parts[0] = mapped
-            new_line = ' '.join(shlex.quote(p) for p in parts)
-            return new_line
+        # only map Arabic when lang is 'ar'
+        if getattr(self, 'lang', 'ar') == 'ar':
+            mapped = self.AR_COMMANDS.get(key_norm)
+            if mapped and mapped != key:
+                parts[0] = mapped
+                new_line = ' '.join(shlex.quote(p) for p in parts)
+                return new_line
         return line
 
     # ------- builtins
+    def do_lang(self, arg):
+        """Set language: lang en|ar — تلقائيًا في Termux يُعيّن en"""
+        choice = (arg or '').strip().lower()
+        if choice not in ('en', 'ar'):
+            print("Usage: lang en|ar\nمثال: lang en")
+            return
+        self.lang = choice
+        self._update_prompt()
+        if self.lang == 'en':
+            print('Language set to English — اللغة الآن: الإنجليزية')
+        else:
+            print('تم تعيين اللغة إلى العربية — Language set to Arabic')
+
     def do_exit(self, arg):
         """Exit the terminal"""
-        print('مع السلامة — bye')
+        if self.lang == 'ar':
+            print('مع السلامة — bye')
+        else:
+            print('bye')
         return True
 
     def do_EOF(self, arg):
@@ -135,8 +163,11 @@ class MadaraShell(cmd.Cmd):
         try:
             os.chdir(os.path.expanduser(target))
         except Exception as e:
-            # show message in Arabic
-            print(f"cd: {e}")
+            # show message in Arabic or English depending on lang
+            if getattr(self, 'lang', 'ar') == 'ar':
+                print(f"cd: {e}")
+            else:
+                print(f"cd: {e}")
 
     def do_ls(self, arg):
         """List files in the directory: ls [path]"""
@@ -154,7 +185,10 @@ class MadaraShell(cmd.Cmd):
     def do_cat(self, arg):
         """Print file contents: cat <file>"""
         if not arg:
-            print('Usage: cat <file>')
+            if getattr(self, 'lang', 'ar') == 'ar':
+                print('استخدام: cat <file>')
+            else:
+                print('Usage: cat <file>')
             return
         try:
             with open(os.path.expanduser(arg), 'r', errors='replace') as f:
@@ -189,12 +223,18 @@ class MadaraShell(cmd.Cmd):
         cmds = [
             ('ls', 'قائمة/عرض'), ('cd', 'اذهب/انتقل'), ('pwd', 'المسار'), ('cat', 'اقرأ/قراءة'),
             ('echo', 'echo'), ('clear', 'مسح'), ('history', 'تاريخ'), ('whoami', 'من_انا'),
-            ('uname', 'uname'), ('help', 'مساعدة'), ('exit', 'خروج')
+            ('uname', 'uname'), ('help', 'مساعدة'), ('exit', 'خروج'), ('lang', 'lang')
         ]
-        print('Available builtins / الأوامر المتاحة:')
-        for en, ar in cmds:
-            print(f"  {en:6}  —  {ar}")
-        print("Unknown commands are executed via system shell.\nالأوامر غير المعروفة تُنفّذ عبر شل النظام. الأوامر الخطرة محجوبة افتراضيًا.")
+        if getattr(self, 'lang', 'ar') == 'ar':
+            print('Available builtins / الأوامر المتاحة:')
+            for en, ar in cmds:
+                print(f"  {en:6}  —  {ar}")
+            print("الأوامر غير المعروفة تُنفّذ عبر شل النظام. الأوامر الخطرة محجوبة افتراضيًا.")
+        else:
+            print('Available builtins:')
+            for en, ar in cmds:
+                print(f"  {en:6}  —  {ar}")
+            print('Unknown commands are executed via system shell. Dangerous commands are blocked by default.')
 
     # ------- execution of external commands
     def default(self, line):
@@ -205,12 +245,18 @@ class MadaraShell(cmd.Cmd):
         lowered = line.lower()
         for p in BLOCKED_PATTERNS:
             if p in lowered:
-                print(f"Blocked potentially dangerous command containing: '{p}'")
+                if getattr(self, 'lang', 'ar') == 'ar':
+                    print(f"تم حظر أمر خطير يحتوي: '{p}'")
+                else:
+                    print(f"Blocked potentially dangerous command containing: '{p}'")
                 return
         # allow user to prefix with '!' to force execution if blocked
         if line.startswith('!'):
             line = line[1:]
-            print(f"Running (forced): {line}")
+            if getattr(self, 'lang', 'ar') == 'ar':
+                print(f"تشغيل (إجباري): {line}")
+            else:
+                print(f"Running (forced): {line}")
         try:
             # use sh -c to interpret pipes etc.
             proc = subprocess.run(line, shell=True)
