@@ -1,3 +1,0 @@
-Add CrashHandler and MyApplication; record uncaught exceptions to file in app external/app files dir
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
