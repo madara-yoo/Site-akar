@@ -1,0 +1,75 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.calculator"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10
+11    <permission
+11-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-4/e13c3d3bf578422fab20ef3b3c7fa9be/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+12        android:name="com.example.calculator.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+12-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-4/e13c3d3bf578422fab20ef3b3c7fa9be/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+13        android:protectionLevel="signature" />
+13-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-4/e13c3d3bf578422fab20ef3b3c7fa9be/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+14
+15    <uses-permission android:name="com.example.calculator.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+15-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-4/e13c3d3bf578422fab20ef3b3c7fa9be/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+15-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-4/e13c3d3bf578422fab20ef3b3c7fa9be/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+16
+17    <application
+17-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:4:5-16:19
+18        android:allowBackup="true"
+18-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:6:9-35
+19        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+19-->[androidx.core:core:1.9.0] /home/codespace/.gradle/caches/transforms-4/e13c3d3bf578422fab20ef3b3c7fa9be/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+20        android:debuggable="true"
+21        android:extractNativeLibs="true"
+22        android:label="@string/app_name"
+22-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:5:9-41
+23        android:supportsRtl="true" >
+23-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:7:9-35
+24        <activity
+24-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:9:9-14:20
+25            android:name="com.example.calculator.MainActivity"
+25-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:9:19-47
+26            android:exported="true" >
+26-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:9:48-71
+27            <intent-filter>
+27-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:10:13-13:29
+28                <action android:name="android.intent.action.MAIN" />
+28-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:11:17-69
+28-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:11:25-66
+29
+30                <category android:name="android.intent.category.LAUNCHER" />
+30-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:12:17-77
+30-->/workspaces/Site-akar/app/src/main/AndroidManifest.xml:12:27-74
+31            </intent-filter>
+32        </activity>
+33
+34        <provider
+34-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-4/76646cb13bad5cf0accea95568ed75d4/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+35            android:name="androidx.startup.InitializationProvider"
+35-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-4/76646cb13bad5cf0accea95568ed75d4/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+36            android:authorities="com.example.calculator.androidx-startup"
+36-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-4/76646cb13bad5cf0accea95568ed75d4/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+37            android:exported="false" >
+37-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-4/76646cb13bad5cf0accea95568ed75d4/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+38            <meta-data
+38-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-4/76646cb13bad5cf0accea95568ed75d4/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+39                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+39-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-4/76646cb13bad5cf0accea95568ed75d4/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+40                android:value="androidx.startup" />
+40-->[androidx.emoji2:emoji2:1.2.0] /home/codespace/.gradle/caches/transforms-4/76646cb13bad5cf0accea95568ed75d4/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+41            <meta-data
+41-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/codespace/.gradle/caches/transforms-4/6c9e7782590c9d6aa24816ec9bbe8f76/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
+42                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+42-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/codespace/.gradle/caches/transforms-4/6c9e7782590c9d6aa24816ec9bbe8f76/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
+43                android:value="androidx.startup" />
+43-->[androidx.lifecycle:lifecycle-process:2.4.1] /home/codespace/.gradle/caches/transforms-4/6c9e7782590c9d6aa24816ec9bbe8f76/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
+44        </provider>
+45    </application>
+46
+47</manifest>
